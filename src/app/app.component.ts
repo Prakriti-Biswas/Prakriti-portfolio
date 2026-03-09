@@ -1,13 +1,22 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { NgIf } from '@angular/common';
+import { HeroComponent } from './features/hero/hero.component';
+import { AboutComponent } from './features/about/about.component';
+import { ProjectsComponent } from './features/projects/projects.component';
+import { ThemeService } from './services/theme.service';
+import { ExperienceComponent } from "./features/experience/experience.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [NgIf, HeroComponent, AboutComponent, ProjectsComponent, ExperienceComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
 })
 export class AppComponent {
-  title = 'Prakriti-portfolio';
+  constructor(public themeService: ThemeService) {}
+
+  toggleTheme() {
+    this.themeService.toggleTheme();
+  }
 }
