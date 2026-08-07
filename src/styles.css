@@ -1,91 +1,79 @@
-/* Tailwind base layers */
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/*  ===== Global Theme Variables ===== */
-html.light {
-  --bg-color: #FFF9F9;
-  --text-color: #1A1A1A;
-  --muted-text: #746E6E;
-
-  --accent-color: #C1666B;       
-  --accent-color-light: #F8AFA6;
-
-  --three-bg: #FFF9F9;
-  --three-light: #F8AFA6;        /* warm pink highlight */
-  --three-mesh: #F28C8C;         /* coral pink */
-  --three-glow: #FFD1D1;         /* super soft pink glow */
+:root, html.light, html.dark {
+  --ink: #101010;
+  --paper: #f3f0e8;
+  --acid: #d8ff38;
+  --muted: #77746d;
+  --line: rgba(16, 16, 16, .18);
+  --bg-color: var(--paper);
+  --text-color: var(--ink);
+  --muted-text: var(--muted);
+  --accent-color: var(--ink);
+  --accent-color-light: var(--acid);
+  --three-bg: var(--paper);
+  --three-light: #d8ff38;
+  --three-mesh: #161616;
+  --three-glow: #d8ff38;
+  --liquid-speed: 0;
+  --liquid-opacity: 0;
+  --liquid-scale: 1;
+  --liquid-shift: 0px;
 }
 
-
-
-html.dark {
-  --bg-color: #0D0A0B;
-  --text-color: #FAF4F4;
-  --muted-text: #B4A6A6;
-
-  --accent-color: #E17BB7;
-  --accent-color-light: #F5A9D0;
-
-  --three-bg: #0D0A0B;
-  --three-light: #C1666B;        /* warm rose light */
-  --three-mesh: #F28C8C;         /* coral mesh */
-  --three-glow: #F5A9D0;         /* aurora pink glow */
-}
-
-
-
-
-/* ===== Global Element Defaults ===== */
-html,
+* { box-sizing: border-box; }
+html { scroll-behavior: auto !important; }
+html, body { min-height: 100%; margin: 0; }
 body {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'DM Sans', Arial, sans-serif;
+  overflow-x: clip;
 }
-/* remove browser’s native smooth scroll so Lenis can drive it */
-html {
-  scroll-behavior: auto !important;
+body::before {
+  content: '';
+  position: fixed;
+  z-index: 50;
+  inset: -12%;
+  pointer-events: none;
+  opacity: var(--liquid-opacity);
+  background:
+    radial-gradient(circle at 22% 32%, rgba(216, 255, 56, .65), transparent 24%),
+    radial-gradient(circle at 76% 62%, rgba(117, 152, 229, .42), transparent 27%);
+  filter: blur(48px) saturate(1.2);
+  mix-blend-mode: multiply;
+  transform: translateY(var(--liquid-shift)) scale(var(--liquid-scale));
+  transition: opacity .48s ease-out, transform .65s cubic-bezier(.2,.8,.2,1);
+}
+a { color: inherit; }
+html.lenis, html.lenis body { height: auto; }
+html.lenis.lenis-smooth { scroll-behavior: auto !important; }
+
+.eyebrow {
+  display: block;
+  color: var(--muted);
+  font: 500 .7rem/1 'DM Mono', monospace;
+  letter-spacing: .08em;
+  text-transform: uppercase;
 }
 
-body {
-  @apply font-sans;
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  overflow: hidden;
-  transition: background-color 0.4s ease, color 0.4s ease;
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: .7rem 1.1rem;
+  border: 1px solid var(--ink);
+  font: 500 .72rem/1 'DM Mono', monospace;
+  letter-spacing: .04em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color .25s ease, background .25s ease, transform .25s ease;
 }
-
-#lenis-scroll {
-  height: 100%;
-  overflow: auto; /* Lenis will take over this */
-  overscroll-behavior: none;
-}
-
-/* ===== Reusable Utility Classes ===== */
-.text-accent {
-  color: var(--accent-color);
-}
-
-.bg-accent {
-  background-color: var(--accent-color);
-}
-
-.text-muted {
-  color: var(--muted-text);
-}
-
-/* Optional: Gradient utility for hero text or buttons */
-.gradient-text {
-  background: linear-gradient(90deg, var(--accent-color), var(--accent-color-light));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Section defaults */
-/* section {
-  background-color: var(--bg-color);
-  color: var(--text-color);
-} */
+.button:hover { background: var(--ink); color: var(--paper); transform: translateY(-3px); }
+.button-primary { background: var(--ink); color: var(--paper); }
+.button-primary:hover { background: var(--acid); color: var(--ink); }

@@ -43,7 +43,6 @@ export class ExperienceComponent implements AfterViewInit, OnDestroy {
           scrub: true,
           pin: true,
           anticipatePin: 1,
-          scroller: '#lenis-scroll',
         },
       });
 

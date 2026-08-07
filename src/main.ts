@@ -11,50 +11,36 @@ gsap.registerPlugin(ScrollTrigger);
 
 // --- function that wires Lenis + ScrollTrigger ---
 function setupLenisAndScrollTrigger() {
-  const scroller = document.querySelector('#lenis-scroll') as HTMLElement | null;
-
-  if (!scroller) {
-    console.warn('Lenis: #lenis-scroll container not found');
-    return;
-  }
-
-  // Create Lenis instance
+  // Use document scrolling rather than a nested scroll container. This keeps
+  // ScrollTrigger's pinned scenes stable across browsers.
   const lenis = new Lenis({
-    wrapper: scroller,
-    content: scroller,
     smoothWheel: true,
     syncTouch: true,
-    lerp: 0.08,
+    gestureOrientation: 'vertical',
+    wheelMultiplier: 1.1,
+    touchMultiplier: 2.5,
+    lerp: 0.1,
+    duration: 1.4,
   });
 
-  // RAF LOOP — CRITICAL FIX
-  function raf(time: number) {
-    lenis.raf(time);
-    ScrollTrigger.update();   // ← THIS is what makes horizontal scroll work
-    requestAnimationFrame(raf);
-  }
-  requestAnimationFrame(raf);
+  // Keep GSAP and Lenis on one animation clock.
+  gsap.ticker.add((time) => lenis.raf(time * 1000));
+  gsap.ticker.lagSmoothing(0);
+  lenis.on('scroll', ({ velocity }: { velocity: number }) => {
+    ScrollTrigger.update();
 
-  // Tell ScrollTrigger to use the lenis scroller
-  ScrollTrigger.scrollerProxy(scroller, {
-    scrollTop(value) {
-      if (value !== undefined) {
-        lenis.scrollTo(value, { immediate: false });
-      }
-      return lenis.scroll;
-    },
-    getBoundingClientRect() {
-      return {
-        top: 0,
-        left: 0,
-        width: window.innerWidth,
-        height: window.innerHeight,
-      };
-    },
+    // A small, velocity-driven visual response keeps the page feeling organic
+    // while preserving the geometry ScrollTrigger uses for pinned sections.
+    const intensity = Math.min(Math.abs(velocity) / 35, 1);
+    document.documentElement.style.setProperty('--liquid-speed', intensity.toFixed(3));
+    document.documentElement.style.setProperty('--liquid-opacity', (intensity * 0.12).toFixed(3));
+    document.documentElement.style.setProperty('--liquid-scale', (1 + intensity * 0.045).toFixed(3));
+    document.documentElement.style.setProperty('--liquid-shift', `${Math.max(-18, Math.min(18, velocity * 0.45)).toFixed(1)}px`);
   });
 
-  // Make this scroller default for all ScrollTriggers
-  ScrollTrigger.defaults({ scroller });
+  // The intro loader briefly covers the page. Measure pinned scenes again once
+  // it has cleared so their start/end positions use the final layout.
+  window.addEventListener('portfolio-ready', () => ScrollTrigger.refresh(), { once: true });
 
   // ---- GLOBAL FADE-IN ANIMATIONS ----
   gsap.utils.toArray('.fade-in').forEach((el: any) => {
@@ -78,10 +64,6 @@ function setupLenisAndScrollTrigger() {
   });
 
   // Keep Lenis + ScrollTrigger fully synced
-  ScrollTrigger.addEventListener('refresh', () => {
-    lenis.raf(performance.now());
-  });
-
   ScrollTrigger.refresh();
 }
 

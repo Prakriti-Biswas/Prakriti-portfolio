@@ -1,22 +1,29 @@
-<!-- Theme Toggle Button -->
-<div class="fixed top-6 right-6 z-50">
-  <button
-    (click)="toggleTheme()"
-    class="relative inline-flex h-8 w-16 items-center rounded-full bg-gray-600 transition duration-300 focus:outline-none"
-    [class.bg-indigo-500]="!themeService.isDark"
-  >
-    <span
-      class="absolute left-1 inline-block h-6 w-6 transform rounded-full bg-white transition-transform duration-300"
-      [class.translate-x-8]="!themeService.isDark"
-    ></span>
-
-    <!-- Icons -->
-    <span class="absolute left-2 text-yellow-400 text-xs" *ngIf="themeService.isDark">☾</span>
-    <span class="absolute right-2 text-white text-xs" *ngIf="!themeService.isDark">☀</span>
-  </button>
+<div *ngIf="isLoading" class="loader" aria-live="polite" aria-label="Loading portfolio">
+  <div class="loader-top"><span>Prakriti Biswas</span><span>Portfolio / 2026</span></div>
+  <div class="loader-core"><span class="loader-disc"></span><p>Building the scene</p><strong>{{ loadingProgress }}<small>%</small></strong></div>
+  <div class="loader-bottom"><span>Creative frontend</span><span>Go <i>↘</i></span></div>
 </div>
 
-<app-hero></app-hero>
-<app-about></app-about>
-<app-experience></app-experience>
-<app-projects></app-projects>
+<div class="app-shell" [class.is-ready]="!isLoading">
+  <header class="site-header">
+    <a href="#top" class="brand" aria-label="Prakriti Biswas, home">P<span>°</span>B</a>
+    <p class="header-role">Frontend developer<br>based in Toronto</p>
+    <nav class="nav-links" aria-label="Primary navigation">
+      <a href="#work">Work</a><a href="#about">About</a><a href="#contact">Contact</a>
+    </nav>
+    <button class="theme-toggle" (click)="toggleTheme()" aria-label="Invert page colours">◐</button>
+  </header>
+
+  <main id="top">
+    <app-hero></app-hero>
+    <app-projects></app-projects>
+    <app-about></app-about>
+    <app-experience></app-experience>
+    <section id="contact" class="contact-section">
+      <p class="eyebrow">05 / Get in touch</p>
+      <p class="contact-kicker">Have a thoughtful product<br>in mind?</p>
+      <a class="contact-email" href="mailto:prakriti@example.com">Let's make it real <span>↗</span></a>
+      <div class="contact-foot"><span>© {{ currentYear }} Prakriti Biswas</span><span>Angular · Motion · WebGL</span></div>
+    </section>
+  </main>
+</div>
