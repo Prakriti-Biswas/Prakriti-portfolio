@@ -16,8 +16,10 @@ import { ExperienceComponent } from "./features/experience/experience.component"
 export class AppComponent implements OnInit, OnDestroy {
   readonly currentYear = new Date().getFullYear();
   isLoading = true;
+  isLoaderExiting = false;
   loadingProgress = 0;
   private loadingFrame?: number;
+  private loaderExitTimer?: ReturnType<typeof setTimeout>;
   constructor(public themeService: ThemeService) {}
 
   toggleTheme() {
@@ -26,15 +28,19 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const startedAt = performance.now();
-    const duration = 1350;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const duration = reduceMotion ? 250 : 1800;
     const update = (now: number) => {
       const progress = Math.min((now - startedAt) / duration, 1);
       this.loadingProgress = Math.round(progress * 100);
       if (progress < 1) {
         this.loadingFrame = requestAnimationFrame(update);
       } else {
-        this.isLoading = false;
-        window.dispatchEvent(new Event('portfolio-ready'));
+        this.isLoaderExiting = true;
+        this.loaderExitTimer = setTimeout(() => {
+          this.isLoading = false;
+          window.dispatchEvent(new Event('portfolio-ready'));
+        }, reduceMotion ? 0 : 650);
       }
     };
     this.loadingFrame = requestAnimationFrame(update);
@@ -42,5 +48,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.loadingFrame) cancelAnimationFrame(this.loadingFrame);
+    if (this.loaderExitTimer) clearTimeout(this.loaderExitTimer);
   }
 }

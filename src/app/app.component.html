@@ -1,10 +1,11 @@
-<div *ngIf="isLoading" class="loader" aria-live="polite" aria-label="Loading portfolio">
-  <div class="loader-top"><span>Prakriti Biswas</span><span>A small prelude</span></div>
-  <div class="loader-core"><span class="loader-disc"></span><p>Gathering thoughts, light, and little details</p><strong>{{ loadingProgress }}<small>%</small></strong></div>
-  <div class="loader-bottom"><span>Design &amp; intelligent systems</span><span>Come in <i>✦</i></span></div>
+<div *ngIf="isLoading" class="loader" [class.is-exiting]="isLoaderExiting" aria-live="polite" aria-label="Loading portfolio">
+  <div class="loader-progress" aria-hidden="true">
+    <span [style.width.%]="loadingProgress"></span>
+  </div>
+  <p class="loader-number">{{ loadingProgress }}</p>
 </div>
 
-<div class="app-shell" [class.is-ready]="!isLoading">
+<div class="app-shell" [class.is-ready]="isLoaderExiting || !isLoading">
   <header class="site-header">
     <a href="#top" class="brand" aria-label="Prakriti Biswas, home">P<span>°</span>B</a>
     <p class="header-role">Design-minded developer<br>based in Toronto</p>
