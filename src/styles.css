@@ -14,20 +14,24 @@
 @tailwind utilities;
 
 :root, html.light, html.dark {
-  --ink: #171715;
-  --paper: #e8e4da;
-  --acid: #aa4936;
-  --muted: #706c63;
-  --line: rgba(23, 23, 21, .18);
+  --ink: #282226;
+  --paper: #eee7df;
+  --acid: #b86673;
+  --moss: #746875;
+  --saffron: #d5a0a8;
+  --sky: #bbb0bd;
+  --rose: #c88992;
+  --muted: #746b6d;
+  --line: rgba(40, 34, 38, .17);
   --bg-color: var(--paper);
   --text-color: var(--ink);
   --muted-text: var(--muted);
   --accent-color: var(--ink);
   --accent-color-light: var(--acid);
   --three-bg: var(--paper);
-  --three-light: #aa4936;
-  --three-mesh: #171715;
-  --three-glow: #aa4936;
+  --three-light: #b86673;
+  --three-mesh: #282226;
+  --three-glow: #b9a9bd;
   --liquid-speed: 0;
   --liquid-opacity: 0;
   --liquid-scale: 1;
@@ -52,8 +56,8 @@ body::before {
   pointer-events: none;
   opacity: var(--liquid-opacity);
   background:
-    radial-gradient(circle at 22% 32%, rgba(170, 73, 54, .30), transparent 24%),
-    radial-gradient(circle at 76% 62%, rgba(72, 68, 60, .22), transparent 27%);
+    radial-gradient(circle at 22% 32%, rgba(184, 102, 115, .22), transparent 24%),
+    radial-gradient(circle at 76% 62%, rgba(116, 104, 117, .18), transparent 27%);
   filter: blur(60px) saturate(.75);
   mix-blend-mode: multiply;
   transform: translateY(var(--liquid-shift)) scale(var(--liquid-scale));

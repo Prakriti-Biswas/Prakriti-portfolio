@@ -10,3 +10,9 @@
 .contact-section { min-height:78vh; padding:10rem 5vw 2rem; background:var(--ink); color:var(--paper); display:flex; flex-direction:column; justify-content:space-between; }.contact-section .eyebrow { color:#a9a69e; }.contact-kicker { margin:5rem 0 0; font:400 clamp(2.8rem,7.2vw,8.6rem)/.93 Georgia,serif; letter-spacing:-.075em; }.contact-email { margin-top:4rem; width:fit-content; font:500 clamp(1.35rem,2.5vw,2.8rem)/1 var(--display-font); letter-spacing:-.05em; text-decoration:none; border-bottom:1px solid var(--acid); padding-bottom:.35rem; }.contact-email span { color:#d8a091; }.contact-foot { padding-top:2rem; display:flex; justify-content:space-between; color:#a9a69e; font:400 .65rem/1 'DM Mono',monospace; text-transform:uppercase; }
 @media (max-width:700px) { .loader-progress{height:.35rem}.loader-number{font-size:40vw;margin-bottom:-.02em}.site-header{padding:1.25rem;grid-template-columns:1fr auto}.header-role,.nav-links{display:none}.contact-section{padding:7rem 1.25rem 1.25rem}.contact-foot{gap:1rem;font-size:.55rem} }
 @media (prefers-reduced-motion:reduce) { .loader.is-exiting,.app-shell{animation:none}.loader-progress span{transition:none} }
+
+.loader { background:#342b32; color:#d8a4ad; }
+.loader-progress span { background:#d8a4ad; }
+.contact-section { background:#282226; }
+.contact-section .eyebrow,.contact-foot { color:#b8aaaf; }
+.contact-email span { color:var(--saffron); }

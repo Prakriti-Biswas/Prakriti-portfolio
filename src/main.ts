@@ -9,6 +9,13 @@ import ScrollTrigger from 'gsap/ScrollTrigger';
 // Register GSAP plugin
 gsap.registerPlugin(ScrollTrigger);
 
+// Browsers may restore the previous scroll position on a reload. This portfolio
+// always begins at its hero, so take control before Angular paints the page.
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+window.scrollTo(0, 0);
+
 // --- function that wires Lenis + ScrollTrigger ---
 function setupLenisAndScrollTrigger() {
   // Use document scrolling rather than a nested scroll container. This keeps
@@ -17,11 +24,18 @@ function setupLenisAndScrollTrigger() {
     smoothWheel: true,
     syncTouch: true,
     gestureOrientation: 'vertical',
-    wheelMultiplier: 1.1,
-    touchMultiplier: 2.5,
-    lerp: 0.1,
-    duration: 1.4,
+    wheelMultiplier: 1,
+    touchMultiplier: 1.8,
+    duration: 1.2,
+    // The exponential falloff gives scrolling the weighted, cinematic glide
+    // used by the WLT reference without turning the page into scroll-jacking.
+    easing: (progress: number) => progress === 1
+      ? 1
+      : 1 - Math.pow(2, -10 * progress),
   });
+
+  // Synchronize Lenis with the native scroll position before it starts ticking.
+  lenis.scrollTo(0, { immediate: true, force: true });
 
   // Keep GSAP and Lenis on one animation clock.
   gsap.ticker.add((time) => lenis.raf(time * 1000));
@@ -40,7 +54,14 @@ function setupLenisAndScrollTrigger() {
 
   // The intro loader briefly covers the page. Measure pinned scenes again once
   // it has cleared so their start/end positions use the final layout.
-  window.addEventListener('portfolio-ready', () => ScrollTrigger.refresh(), { once: true });
+  window.addEventListener('portfolio-ready', () => {
+    // Run this again after the loader clears. Safari and Chrome can apply their
+    // saved position late, after the initial JavaScript has already executed.
+    lenis.scrollTo(0, { immediate: true, force: true });
+    window.scrollTo(0, 0);
+    ScrollTrigger.clearScrollMemory('manual');
+    ScrollTrigger.refresh();
+  }, { once: true });
 
   // ---- GLOBAL FADE-IN ANIMATIONS ----
   gsap.utils.toArray('.fade-in').forEach((el: any) => {
