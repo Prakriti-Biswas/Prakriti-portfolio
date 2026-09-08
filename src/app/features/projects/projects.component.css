@@ -23,3 +23,10 @@
   .project-meta span{display:block}
   .project-meta b{display:block;margin-bottom:.1rem}
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .projects-section { height: auto; overflow: visible; }
+  .project-viewport { height: auto; overflow: visible; }
+  .project-track { width: 100%; height: auto; display: block; }
+  .project-scene { width: 100%; min-height: 100svh; height: auto; flex: none; }
+}

@@ -31,7 +31,7 @@
   .experience-section { padding: 6rem 1.25rem; }
   .experience-title { display: grid; }
   .experience-stack { min-height: 84svh; }
-  .exp-content { width: calc(100vw - 2.5rem); height: 82svh; min-height: 620px; padding: 1.4rem; grid-template-columns: 1fr; grid-template-rows: auto auto auto; gap: 1rem; overflow-y: auto; }
+  .exp-content { width: calc(100vw - 2.5rem); height: 82svh; min-height: 620px; padding: 1.4rem; grid-template-columns: 1fr; grid-template-rows: auto auto auto; gap: 1rem; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
   .exp-index { top: 1.4rem; left: 1.4rem; }
   .exp-logo { top: 1.4rem; right: 1.4rem; max-width: 4.5rem; }
   .exp-logo-placeholder { top: 1.4rem; right: 1.4rem; }
@@ -40,4 +40,15 @@
   .exp-highlights { align-self: auto; }
   .exp-highlights li { padding: .55rem 0; font-size: .82rem; }
   .exp-tools { grid-column: 1; }
+}
+
+@media (max-width: 380px) {
+  .experience-section { padding-inline: 1rem; }
+  .exp-content h3 { font-size: 2.35rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .experience-stack { min-height: 0; display: grid; gap: 1.5rem; perspective: none; }
+  .exp-panel { position: relative; inset: auto; }
+  .exp-content { height: auto; min-height: 0; }
 }

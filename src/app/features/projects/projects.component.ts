@@ -13,9 +13,12 @@ gsap.registerPlugin(ScrollTrigger);
 export class ProjectsComponent implements AfterViewInit, OnDestroy {
   @ViewChild('sectionRef', { static: true }) sectionRef!: ElementRef<HTMLElement>;
   private ctx?: gsap.Context;
+  private media?: gsap.MatchMedia;
 
   ngAfterViewInit(): void {
-    this.ctx = gsap.context(() => {
+    this.media = gsap.matchMedia();
+    this.media.add('(prefers-reduced-motion: no-preference)', () => {
+      this.ctx = gsap.context(() => {
       const track = this.sectionRef.nativeElement.querySelector<HTMLElement>('.project-track');
       const scenes = gsap.utils.toArray<HTMLElement>('.project-scene');
 
@@ -38,8 +41,9 @@ export class ProjectsComponent implements AfterViewInit, OnDestroy {
       timeline.to('.orb', { rotation: 220, scale: 1.22, ease: 'none', duration: 4 }, 0);
       timeline.fromTo(scenes.slice(1), { opacity: 0.7 }, { opacity: 1, stagger: 1, duration: 0.65 }, 0.25);
       ScrollTrigger.refresh();
-    }, this.sectionRef.nativeElement);
+      }, this.sectionRef.nativeElement);
+    });
   }
 
-  ngOnDestroy(): void { this.ctx?.revert(); }
+  ngOnDestroy(): void { this.ctx?.revert(); this.media?.revert(); }
 }

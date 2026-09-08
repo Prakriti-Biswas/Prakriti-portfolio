@@ -49,6 +49,10 @@
 .interest-grid h3 { margin: auto 0 1rem; font: 500 clamp(1.5rem, 2.2vw, 2.5rem) / .95 var(--display-font); letter-spacing: -.06em; }
 .interest-grid p { margin: 0; max-width: 16rem; font-size: .86rem; line-height: 1.5; }
 
+@media (hover: none) {
+  .interest-grid article:hover { background: transparent; color: inherit; transform: none; }
+}
+
 @media (max-width: 900px) {
   .interest-grid { grid-template-columns: repeat(2, 1fr); }
   .interest-grid article:nth-child(2) { border-right: 0; }

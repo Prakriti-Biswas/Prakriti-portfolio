@@ -21,9 +21,12 @@ export class ExperienceComponent implements AfterViewInit, OnDestroy {
   sectionRef!: ElementRef<HTMLElement>;
 
   private ctx?: gsap.Context;
+  private media?: gsap.MatchMedia;
 
   ngAfterViewInit(): void {
-    this.ctx = gsap.context(() => {
+    this.media = gsap.matchMedia();
+    this.media.add('(prefers-reduced-motion: no-preference)', () => {
+      this.ctx = gsap.context(() => {
       const panels = gsap.utils.toArray<HTMLElement>('.exp-panel');
 
       // Initial state: stacked back in space
@@ -76,10 +79,12 @@ export class ExperienceComponent implements AfterViewInit, OnDestroy {
           );
         }
       });
-    }, this.sectionRef);
+      }, this.sectionRef);
+    });
   }
 
   ngOnDestroy(): void {
     this.ctx?.revert();
+    this.media?.revert();
   }
 }

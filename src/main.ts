@@ -18,11 +18,27 @@ window.scrollTo(0, 0);
 
 // --- function that wires Lenis + ScrollTrigger ---
 function setupLenisAndScrollTrigger() {
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isTouchLayout = window.matchMedia('(max-width: 700px), (pointer: coarse)').matches;
+
+  // Mobile browsers already provide well-optimised momentum scrolling. Adding
+  // a second touch-scrolling layer causes rubber-banding and fights the address
+  // bar as the visual viewport changes, so keep phones on native scrolling.
+  if (prefersReducedMotion || isTouchLayout) {
+    window.addEventListener('portfolio-ready', () => ScrollTrigger.refresh(), { once: true });
+    ScrollTrigger.refresh();
+    return;
+  }
+
   // Use document scrolling rather than a nested scroll container. This keeps
   // ScrollTrigger's pinned scenes stable across browsers.
   const lenis = new Lenis({
+    // Keep cancelable input listeners off window/document. Chrome can promote
+    // listeners on those root targets to passive, which prevents Lenis from
+    // calling preventDefault() while it smooths wheel and touch input.
+    eventsTarget: document.documentElement,
     smoothWheel: true,
-    syncTouch: true,
+    syncTouch: false,
     gestureOrientation: 'vertical',
     wheelMultiplier: 1,
     touchMultiplier: 1.8,
