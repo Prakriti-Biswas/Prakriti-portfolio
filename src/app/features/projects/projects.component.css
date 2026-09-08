@@ -5,3 +5,21 @@
 .coral { background:#d5a7aa; }
 .blue { background:#bbb0bd; }
 .yellow { background:#a99ba6; color:var(--ink); }
+
+/* Project case-study content */
+.project-copy { max-width:min(74rem,82vw); }
+.project-copy .project-type { margin:0 0 1.3rem; }
+.project-copy h2 { margin-bottom:1.5rem; font-size:clamp(4rem,8.5vw,9.5rem); line-height:.76; letter-spacing:-.095em; }
+.project-copy .project-summary { max-width:42rem; margin:0 0 1.5rem; font:400 clamp(.95rem,1.25vw,1.2rem)/1.5 'DM Sans',sans-serif; letter-spacing:0; text-transform:none; }
+.project-meta { max-width:60rem; padding-top:1rem; display:flex; flex-wrap:wrap; gap:.7rem 2rem; border-top:1px solid currentColor; font:500 .64rem/1.5 'DM Mono',monospace; letter-spacing:.02em; text-transform:uppercase; }
+.project-meta span { display:flex; gap:.6rem; }
+.project-meta b { opacity:.58; font-weight:500; }
+
+@media(max-width:700px){
+  .project-copy{max-width:calc(100vw - 2.5rem)}
+  .project-copy h2{font-size:clamp(3.5rem,15vw,6rem);margin-bottom:1.2rem}
+  .project-copy .project-summary{font-size:.9rem;line-height:1.42}
+  .project-meta{padding-right:3.5rem;display:grid;gap:.45rem;font-size:.55rem}
+  .project-meta span{display:block}
+  .project-meta b{display:block;margin-bottom:.1rem}
+}

@@ -1,0 +1,118 @@
+<section id="direction" class="profile-intro" aria-labelledby="profile-intro-title">
+  <div class="intro-copy">
+    <p class="eyebrow">01 / Direction</p>
+    <h2 id="profile-intro-title">Engineer by practice.<br><em>Designer by instinct.</em></h2>
+    <div class="intro-statement">
+      <p class="intro-lead">I’m Prakriti Biswas—a full-stack developer who cares deeply about the part people actually touch.</p>
+      <p>I build scalable web products at the intersection of frontend engineering, user experience, and applied AI. My work moves from component architecture and API integration to accessibility, performance, QA, and production support.</p>
+      <p>I want to help thoughtful teams turn complex workflows into calm, useful products: interfaces that are technically dependable, visually considered, and easy for real people to understand.</p>
+    </div>
+    <div class="direction-list" aria-label="Professional focus">
+      <span>Scalable frontend systems</span>
+      <span>Human-centred AI products</span>
+      <span>Accessible interaction design</span>
+    </div>
+  </div>
+
+  <div class="interface-lab" [attr.data-mode]="activeMode">
+    <div class="lab-topline">
+      <span>Interface study / 001</span>
+      <span class="live-status"><i></i> Live prototype</span>
+    </div>
+
+    <div class="ui-stage">
+      <div class="ui-shadow-card" aria-hidden="true"></div>
+      <div class="ui-window">
+        <header class="ui-header">
+          <span class="ui-mark">P°</span>
+          <button type="button" class="ui-search" (click)="commandOpen = true">Search the workspace <kbd>⌘ K</kbd></button>
+          <span class="ui-avatar">PB</span>
+        </header>
+
+        <div class="ui-body">
+          <nav class="ui-sidebar" aria-label="Prototype navigation">
+            <button type="button" [class.is-selected]="activeView === 'overview'" (click)="setView('overview')" aria-label="Overview"><span>⌁</span><small>Overview</small></button>
+            <button type="button" [class.is-selected]="activeView === 'people'" (click)="setView('people')" aria-label="People"><span>◎</span><small>People</small></button>
+            <button type="button" [class.is-selected]="activeView === 'insights'" (click)="setView('insights')" aria-label="Insights"><span>↗</span><small>Insights</small></button>
+          </nav>
+
+          <div class="ui-dashboard">
+            @switch (activeView) {
+              @case ('people') {
+                <div class="dashboard-heading">
+                  <div><small>People / 128 active</small><h3>A healthier workload.</h3></div>
+                  <button type="button" (click)="activeView = 'insights'">View insights <span>↗</span></button>
+                </div>
+                <div class="people-list">
+                  <div><span class="person-avatar rose">AM</span><p><strong>Amara M.</strong><small>Product design · Available</small></p><b>82%</b></div>
+                  <div><span class="person-avatar lilac">JL</span><p><strong>Jordan L.</strong><small>Engineering · Focused</small></p><b>68%</b></div>
+                  <div><span class="person-avatar green">SK</span><p><strong>Sam K.</strong><small>Research · Available</small></p><b>91%</b></div>
+                </div>
+                <div class="capacity-card"><span>Team capacity</span><strong>78%</strong><i><b></b></i><small>Balanced across active projects</small></div>
+              }
+              @case ('insights') {
+                <div class="dashboard-heading">
+                  <div><small>Insights / Live</small><h3>Signals, not noise.</h3></div>
+                  <button type="button" (click)="activeView = 'overview'">Back home <span>⌁</span></button>
+                </div>
+                <div class="insight-hero"><small>Weekly completion</small><strong>84.6%</strong><span>↗ 12.4% this month</span></div>
+                <div class="large-chart" aria-label="Weekly completion trend"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><svg viewBox="0 0 500 120" preserveAspectRatio="none"><path d="M0 98 C70 92 80 70 145 76 S220 95 275 55 S355 62 400 32 S460 28 500 10"/></svg></div>
+                <div class="insight-note"><span>✦</span><p><strong>AI-detected pattern</strong><small>Shorter approval paths correlate with 18% faster completion.</small></p></div>
+              }
+              @default {
+                <div class="dashboard-heading">
+                  <div><small>Good morning,</small><h3>Make complexity clear.</h3></div>
+                  <button type="button" (click)="workflowOpen = true">New workflow <span>＋</span></button>
+                </div>
+
+                <div class="metric-grid">
+                  <article><small>Completion</small><strong>84%</strong><span class="metric-rise">↗ 12.4%</span></article>
+                  <article><small>Active flows</small><strong>{{ workflowCreated ? 25 : 24 }}</strong><span>{{ workflowCreated ? 'New flow added' : '6 need review' }}</span></article>
+                  <article class="chart-card"><div><small>Engagement</small><strong>1.8k</strong></div><div class="mini-chart" aria-label="Increasing engagement chart"><i style="--bar: 34%"></i><i style="--bar: 48%"></i><i style="--bar: 42%"></i><i style="--bar: 67%"></i><i style="--bar: 58%"></i><i style="--bar: 82%"></i><i style="--bar: 92%"></i></div></article>
+                </div>
+
+                <div class="activity-card">
+                  <div class="activity-heading"><span>Recent activity</span><button type="button" (click)="activeView = 'people'">View team ↗</button></div>
+                  <div class="activity-row"><i class="activity-icon rose">✓</i><span><strong>Case workflow completed</strong><small>Leave request · 2 min ago</small></span><b>Complete</b></div>
+                  <button type="button" class="activity-row activity-action" (click)="reviewed = !reviewed"><i class="activity-icon lilac">✦</i><span><strong>AI summary is ready</strong><small>12 sources processed · 8 min ago</small></span><b>{{ reviewed ? 'Reviewed' : 'Review' }}</b></button>
+                </div>
+              }
+            }
+          </div>
+        </div>
+
+        @if (workflowOpen) {
+          <div class="workflow-panel" role="dialog" aria-modal="true" aria-labelledby="workflow-title">
+            <button type="button" class="panel-close" (click)="workflowOpen = false" aria-label="Close workflow panel">×</button>
+            <small>Create workflow / 01</small><h4 id="workflow-title">Start with a clear outcome.</h4>
+            <label>Workflow name<input value="Employee onboarding" aria-label="Workflow name"></label>
+            <label>Owner<button type="button" class="select-control">Product team <span>⌄</span></button></label>
+            <div class="panel-actions"><button type="button" (click)="workflowOpen = false">Cancel</button><button type="button" (click)="createWorkflow()">Create workflow ↗</button></div>
+          </div>
+        }
+
+        @if (commandOpen) {
+          <div class="command-palette" role="dialog" aria-modal="true" aria-label="Command palette">
+            <div><span>⌕</span><input autofocus placeholder="Search actions and people…" aria-label="Search actions and people"><kbd>ESC</kbd></div>
+            <small>Quick actions</small>
+            <button type="button" (click)="commandOpen = false; workflowOpen = true"><span>＋</span> Create a workflow <kbd>↵</kbd></button>
+            <button type="button" (click)="commandOpen = false; activeView = 'insights'"><span>↗</span> Open insights <kbd>G I</kbd></button>
+          </div>
+        }
+
+        @if (workflowCreated) {
+          <button type="button" class="prototype-toast" (click)="workflowCreated = false"><span>✓</span> Workflow created <small>Dismiss</small></button>
+        }
+      </div>
+
+      <div class="ui-note note-one"><span>01</span> Clear hierarchy</div>
+      <div class="ui-note note-two"><span>02</span> Useful feedback</div>
+    </div>
+
+    <div class="lab-controls" role="group" aria-label="Interface design qualities">
+      <button [class.is-active]="activeMode === 'system'" (click)="setMode('system')">System</button>
+      <button [class.is-active]="activeMode === 'access'" (click)="setMode('access')">Access</button>
+      <button [class.is-active]="activeMode === 'motion'" (click)="setMode('motion')">Motion</button>
+    </div>
+  </div>
+</section>

@@ -88,17 +88,18 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
     this.resizeObserver.observe(stage);
     this.resize();
 
-    if (this.reducedMotion) {
-      this.renderer.render(this.scene, this.camera);
-    } else {
-      this.animate();
-    }
+    // Keep scroll-linked art direction active for everyone. Reduced-motion
+    // mode removes autonomous floating/rotation, but still reflects the
+    // visitor's deliberate scroll position.
+    this.animate();
   }
 
   private createRibbonGeometry(): THREE.BufferGeometry {
     const lengthSegments = 240;
     const widthSegments = 16;
     const positions: number[] = [];
+    const wavePositions: number[] = [];
+    const helixPositions: number[] = [];
     const indices: number[] = [];
 
     for (let segment = 0; segment <= lengthSegments; segment += 1) {
@@ -114,10 +115,30 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
       const twist = t * 1.5;
       const widthDirection = radial.multiplyScalar(Math.cos(twist)).add(lift.multiplyScalar(Math.sin(twist))).normalize();
 
+      const waveCenter = new THREE.Vector3(
+        (segment / lengthSegments - 0.5) * 6.2,
+        Math.sin(t * 2) * 0.75,
+        Math.cos(t) * 0.38,
+      );
+      const waveWidth = new THREE.Vector3(0, Math.cos(t * 1.5), Math.sin(t * 1.5)).normalize();
+
+      const helixAngle = t * 2;
+      const helixRadius = 1.65 + Math.sin(t * 3) * 0.16;
+      const helixCenter = new THREE.Vector3(
+        Math.cos(helixAngle) * helixRadius,
+        (segment / lengthSegments - 0.5) * 4.8,
+        Math.sin(helixAngle) * helixRadius,
+      );
+      const helixWidth = new THREE.Vector3(Math.cos(helixAngle), 0, Math.sin(helixAngle)).normalize();
+
       for (let across = 0; across <= widthSegments; across += 1) {
         const offset = (across / widthSegments - 0.5) * 1.15;
         const point = center.clone().addScaledVector(widthDirection, offset);
+        const wavePoint = waveCenter.clone().addScaledVector(waveWidth, offset * 0.82);
+        const helixPoint = helixCenter.clone().addScaledVector(helixWidth, offset * 0.72);
         positions.push(point.x, point.y, point.z);
+        wavePositions.push(wavePoint.x, wavePoint.y, wavePoint.z);
+        helixPositions.push(helixPoint.x, helixPoint.y, helixPoint.z);
       }
     }
 
@@ -132,6 +153,10 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
 
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geometry.morphAttributes['position'] = [
+      new THREE.Float32BufferAttribute(wavePositions, 3),
+      new THREE.Float32BufferAttribute(helixPositions, 3),
+    ];
     geometry.setIndex(indices);
     geometry.computeVertexNormals();
     return geometry;
@@ -152,20 +177,34 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
 
   private animate = (): void => {
     if (!this.renderer || !this.scene || !this.camera || !this.sculpture) return;
-    const time = performance.now() * 0.001;
-    const scrollJourney = Math.min(window.scrollY / Math.max(window.innerHeight, 1), 2.1);
-    const exitProgress = THREE.MathUtils.smoothstep(scrollJourney, 1.15, 2.05);
+    const time = this.reducedMotion ? 0 : performance.now() * 0.001;
+    const scrollJourney = Math.min(window.scrollY / Math.max(window.innerHeight, 1), 5.2);
+    const directionShape = THREE.MathUtils.smoothstep(scrollJourney, 0.62, 1.48);
+    const experienceShape = THREE.MathUtils.smoothstep(scrollJourney, 1.62, 2.48);
+    const exitProgress = THREE.MathUtils.smoothstep(scrollJourney, 4.15, 4.95);
     const stage = this.threeStage.nativeElement;
 
-    // Keep the sculpture with the visitor beyond the hero, then hand the frame
-    // over to the work section instead of cutting it off at the section edge.
-    stage.style.opacity = `${1 - exitProgress}`;
-    stage.style.transform = `translateY(calc(-50% - ${scrollJourney * 5.5}vh))`;
+    // Morph ribbon → wave → helix while it becomes an ambient edge element.
+    const ambientOpacity = THREE.MathUtils.lerp(1, 0.2, directionShape) + experienceShape * 0.16;
+    const scale = 1 - directionShape * 0.36 + experienceShape * 0.08;
+    const driftX = directionShape * 21 - experienceShape * 11;
+    const driftY = directionShape * 12 - experienceShape * 8;
+    stage.style.opacity = `${ambientOpacity * (1 - exitProgress)}`;
+    stage.style.transform = `translate3d(${driftX}vw, calc(-50% + ${driftY}vh), 0) scale(${scale}) rotate(${directionShape * 5 - experienceShape * 8}deg)`;
+    stage.style.filter = `blur(${directionShape * 0.3 - experienceShape * 0.18}px) saturate(${1 - directionShape * 0.24 + experienceShape * 0.18})`;
     stage.style.visibility = exitProgress > 0.995 ? 'hidden' : 'visible';
-    this.sculpture.rotation.y += (this.pointerX * 0.24 + time * 0.12 - this.sculpture.rotation.y) * 0.035;
-    this.sculpture.rotation.x += (-0.34 + this.pointerY * 0.13 - this.sculpture.rotation.x) * 0.04;
-    this.sculpture.rotation.z = -0.12 + scrollJourney * 0.34;
-    this.sculpture.scale.setScalar(1 - scrollJourney * 0.07);
+
+    this.sculpture.children.slice(0, 2).forEach((object) => {
+      if (!(object instanceof THREE.Mesh) || !object.morphTargetInfluences) return;
+      object.morphTargetInfluences[0] = directionShape * (1 - experienceShape);
+      object.morphTargetInfluences[1] = experienceShape;
+    });
+    const pointerX = this.reducedMotion ? 0 : this.pointerX;
+    const pointerY = this.reducedMotion ? 0 : this.pointerY;
+    this.sculpture.rotation.y += (pointerX * 0.24 + time * 0.12 - this.sculpture.rotation.y) * 0.035;
+    this.sculpture.rotation.x += (-0.34 + pointerY * 0.13 - this.sculpture.rotation.x) * 0.04;
+    this.sculpture.rotation.z = -0.12 + directionShape * 0.2 - experienceShape * 0.15;
+    this.sculpture.scale.setScalar(1 - directionShape * 0.04);
     this.sculpture.position.y = Math.sin(time * 0.7) * 0.12;
 
     this.sculpture.children.slice(2).forEach((pearl, index) => {
