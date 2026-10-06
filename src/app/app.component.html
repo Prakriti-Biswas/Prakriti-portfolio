@@ -8,9 +8,9 @@
 <div class="app-shell" [class.is-ready]="isLoaderExiting || !isLoading">
   <header class="site-header">
     <a href="#top" class="brand" aria-label="Prakriti Biswas, home">P<span>°</span>B</a>
-    <p class="header-role">Design-minded developer<br>based in Toronto</p>
+    <p class="header-role">Software developer<br>based in Toronto</p>
     <nav class="nav-links" aria-label="Primary navigation">
-      <a href="#experience">Experience</a><a href="#work">Work</a><a href="#about">About</a><a href="#contact">Contact</a>
+      <a href="#top">Home</a><a href="#experience">Experience</a><a href="#work">Projects</a><a href="#about">About</a><a href="#contact">Contact</a>
     </nav>
     <button class="theme-toggle" (click)="toggleTheme()" aria-label="Invert page colours">◐</button>
   </header>
@@ -22,10 +22,13 @@
     <app-projects></app-projects>
     <app-about></app-about>
     <section id="contact" class="contact-section">
-      <p class="eyebrow">05 / Get in touch</p>
-      <p class="contact-kicker">Have a thoughtful product<br>in mind?</p>
-      <a class="contact-email" href="mailto:prakriti@example.com">Let's make it real <span>↗</span></a>
-      <div class="contact-foot"><span>© {{ currentYear }} Prakriti Biswas</span><span>Interfaces · AI systems · Motion</span></div>
+      <p class="eyebrow">06 / Get in touch</p>
+      <p class="contact-kicker">Have a thoughtful product<br>or role in mind?</p>
+      <div class="contact-links">
+        <a class="contact-email" href="mailto:prakritisingh2002@gmail.com">Let’s talk <span>↗</span></a>
+        <a href="https://github.com/Prakriti-Biswas" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+      </div>
+      <div class="contact-foot"><span>© {{ currentYear }} Prakriti Biswas</span><span>React · TypeScript · APIs · AI workflows</span></div>
     </section>
   </main>
 </div>
