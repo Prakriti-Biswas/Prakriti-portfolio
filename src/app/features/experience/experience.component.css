@@ -16,6 +16,9 @@
 .exp-tag { margin: 0 0 1rem; }
 .exp-content h3 { margin: 0; font: 500 clamp(2.7rem, 5.2vw, 5.2rem) / .84 var(--display-font); letter-spacing: -.075em; }
 .exp-role { margin: 1.25rem 0 0; font-weight: 600; line-height: 1.35; }
+.exp-link { width:fit-content; margin-top:1rem; padding-bottom:.25rem; display:inline-block; border-bottom:1px solid currentColor; font:500 .64rem/1.3 'DM Mono',monospace; letter-spacing:.03em; text-decoration:none; text-transform:uppercase; transition:opacity .2s ease; }
+.exp-link:hover { opacity:.6; }
+.exp-link:focus-visible { outline:2px solid currentColor; outline-offset:4px; }
 .exp-highlights { align-self: end; margin: 0; padding: 0; list-style: none; }
 .exp-highlights li { padding: clamp(.7rem, 1.2vh, 1rem) 0; border-top: 1px solid currentColor; font-size: clamp(.9rem, 1.05vw, 1.05rem); line-height: 1.46; }
 .exp-highlights strong { font-weight: 700; }

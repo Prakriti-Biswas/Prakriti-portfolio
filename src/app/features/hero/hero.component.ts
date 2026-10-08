@@ -99,7 +99,7 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
     const widthSegments = 16;
     const positions: number[] = [];
     const wavePositions: number[] = [];
-    const helixPositions: number[] = [];
+    const flowPositions: number[] = [];
     const indices: number[] = [];
 
     for (let segment = 0; segment <= lengthSegments; segment += 1) {
@@ -122,23 +122,31 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
       );
       const waveWidth = new THREE.Vector3(0, Math.cos(t * 1.5), Math.sin(t * 1.5)).normalize();
 
-      const helixAngle = t * 2;
-      const helixRadius = 1.65 + Math.sin(t * 3) * 0.16;
-      const helixCenter = new THREE.Vector3(
-        Math.cos(helixAngle) * helixRadius,
-        (segment / lengthSegments - 0.5) * 4.8,
-        Math.sin(helixAngle) * helixRadius,
+      // A loose silk-like current rather than a tightly wound helix. Keeping
+      // this path open gives the final scroll state a calmer, more organic
+      // silhouette while the changing width vector adds a gentle fold.
+      const progress = segment / lengthSegments;
+      const flowCenter = new THREE.Vector3(
+        (progress - 0.5) * 6.4,
+        Math.sin((progress - 0.5) * Math.PI * 1.65) * 1.25
+          + Math.sin(progress * Math.PI * 3.2) * 0.18,
+        Math.cos(progress * Math.PI * 1.35) * 0.62,
       );
-      const helixWidth = new THREE.Vector3(Math.cos(helixAngle), 0, Math.sin(helixAngle)).normalize();
+      const flowFold = progress * Math.PI * 1.4 - Math.PI * 0.2;
+      const flowWidth = new THREE.Vector3(
+        0.12 * Math.sin(progress * Math.PI),
+        Math.cos(flowFold),
+        Math.sin(flowFold),
+      ).normalize();
 
       for (let across = 0; across <= widthSegments; across += 1) {
         const offset = (across / widthSegments - 0.5) * 1.15;
         const point = center.clone().addScaledVector(widthDirection, offset);
         const wavePoint = waveCenter.clone().addScaledVector(waveWidth, offset * 0.82);
-        const helixPoint = helixCenter.clone().addScaledVector(helixWidth, offset * 0.72);
+        const flowPoint = flowCenter.clone().addScaledVector(flowWidth, offset * 0.9);
         positions.push(point.x, point.y, point.z);
         wavePositions.push(wavePoint.x, wavePoint.y, wavePoint.z);
-        helixPositions.push(helixPoint.x, helixPoint.y, helixPoint.z);
+        flowPositions.push(flowPoint.x, flowPoint.y, flowPoint.z);
       }
     }
 
@@ -155,7 +163,7 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
     geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
     geometry.morphAttributes['position'] = [
       new THREE.Float32BufferAttribute(wavePositions, 3),
-      new THREE.Float32BufferAttribute(helixPositions, 3),
+      new THREE.Float32BufferAttribute(flowPositions, 3),
     ];
     geometry.setIndex(indices);
     geometry.computeVertexNormals();
@@ -184,7 +192,7 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
     const exitProgress = THREE.MathUtils.smoothstep(scrollJourney, 4.15, 4.95);
     const stage = this.threeStage.nativeElement;
 
-    // Morph ribbon → wave → helix while it becomes an ambient edge element.
+    // Morph ribbon → wave → flowing silk while it becomes an ambient edge element.
     const ambientOpacity = THREE.MathUtils.lerp(1, 0.2, directionShape) + experienceShape * 0.16;
     const scale = 1 - directionShape * 0.36 + experienceShape * 0.08;
     const driftX = directionShape * 21 - experienceShape * 11;

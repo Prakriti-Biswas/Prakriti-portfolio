@@ -37,8 +37,21 @@ export class ProjectsComponent implements AfterViewInit, OnDestroy {
         },
       });
 
-      timeline.to(track, { xPercent: -75, ease: 'none', duration: 4 }, 0);
-      timeline.to('.orb', { rotation: 220, scale: 1.22, ease: 'none', duration: 4 }, 0);
+      const travelPercent = -100 * ((scenes.length - 1) / scenes.length);
+      timeline.to(track, { xPercent: travelPercent, ease: 'none', duration: scenes.length }, 0);
+      timeline.fromTo('.system-object', {
+        y: () => window.innerHeight * 0.1,
+        x: 0,
+      }, {
+        x: () => window.innerWidth * 0.12,
+        y: () => -(window.innerHeight * 0.58),
+        rotation: 118,
+        scale: .76,
+        ease: 'none',
+        duration: scenes.length,
+      }, 0);
+      timeline.to('.orbit-a', { rotation: 220, scale: 1.12, ease: 'none', duration: scenes.length }, 0);
+      timeline.to('.orbit-b', { rotation: -180, scale: .9, ease: 'none', duration: scenes.length }, 0);
       timeline.fromTo(scenes.slice(1), { opacity: 0.7 }, { opacity: 1, stagger: 1, duration: 0.65 }, 0.25);
       ScrollTrigger.refresh();
       }, this.sectionRef.nativeElement);

@@ -21,10 +21,27 @@ function setupLenisAndScrollTrigger() {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isTouchLayout = window.matchMedia('(max-width: 700px), (pointer: coarse)').matches;
 
+  const bindNavigationScroll = (scrollToTarget: (target: HTMLElement) => void) => {
+    document.querySelectorAll<HTMLAnchorElement>('.nav-links a[href^="#"]').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        const target = document.querySelector<HTMLElement>(link.hash);
+        if (!target) return;
+
+        event.preventDefault();
+        scrollToTarget(target);
+        history.pushState(null, '', link.hash);
+      });
+    });
+  };
+
   // Mobile browsers already provide well-optimised momentum scrolling. Adding
   // a second touch-scrolling layer causes rubber-banding and fights the address
   // bar as the visual viewport changes, so keep phones on native scrolling.
   if (prefersReducedMotion || isTouchLayout) {
+    bindNavigationScroll((target) => target.scrollIntoView({
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
+      block: 'start',
+    }));
     window.addEventListener('portfolio-ready', () => ScrollTrigger.refresh(), { once: true });
     ScrollTrigger.refresh();
     return;
@@ -67,6 +84,11 @@ function setupLenisAndScrollTrigger() {
     document.documentElement.style.setProperty('--liquid-scale', (1 + intensity * 0.045).toFixed(3));
     document.documentElement.style.setProperty('--liquid-shift', `${Math.max(-18, Math.min(18, velocity * 0.45)).toFixed(1)}px`);
   });
+
+  bindNavigationScroll((target) => lenis.scrollTo(target, {
+    offset: -16,
+    duration: 1.2,
+  }));
 
   // The intro loader briefly covers the page. Measure pinned scenes again once
   // it has cleared so their start/end positions use the final layout.
